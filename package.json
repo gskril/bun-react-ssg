@@ -1,0 +1,23 @@
+{
+  "name": "name",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf ./node_modules",
+    "dev": "bun --watch run ./src/index.tsx",
+    "start": "bun run ./src/index.tsx",
+    "build": "bun run src/index.tsx"
+  },
+  "devDependencies": {
+    "@types/html-minifier-terser": "^7.0.2",
+    "@types/react-dom": "^19.0.3",
+    "bun-types": "^1.0.1",
+    "html-minifier-terser": "^7.2.0",
+    "prettier": "^2.8.4"
+  },
+  "dependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^4.1.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}

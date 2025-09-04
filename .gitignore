@@ -1,0 +1,6 @@
+.env
+.DS_Store
+/dist
+/out
+/ignore
+/node_modules
