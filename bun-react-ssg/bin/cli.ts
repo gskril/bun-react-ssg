@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 import { serve } from 'bun'
-import { join, resolve } from 'path'
+import { watch } from 'node:fs'
+import { join, resolve } from 'node:path'
 
 import { buildSite } from '../src/index'
 
@@ -15,6 +16,7 @@ Options:
   --pages <dir>	Path to pages directory (default: src/pages)
   --dist <dir>	Path to output directory (default: dist)
   --port <port>	Port for serve (default: 3000)
+  --watch	Watch for changes and rebuild (build command only)
   -h, --help	Show help
 `)
 }
@@ -28,6 +30,10 @@ function readFlag(name: string, fallback?: string) {
   return fallback
 }
 
+function hasFlag(name: string) {
+  return args.includes(name)
+}
+
 async function main() {
   if (!command || command === '-h' || command === '--help') {
     printHelp()
@@ -38,7 +44,57 @@ async function main() {
   const distDir = readFlag('--dist', 'dist')!
 
   if (command === 'build') {
-    await buildSite({ pagesDir, distDir })
+    const watchMode = hasFlag('--watch')
+
+    if (watchMode) {
+      console.log('🔄 Watch mode enabled. Building and watching for changes...')
+
+      // Initial build
+      await buildSite({ pagesDir, distDir })
+
+      // Watch for changes
+      const absolutePagesDir = resolve(pagesDir)
+      console.log(`👀 Watching ${absolutePagesDir} for changes...`)
+
+      let isBuilding = false
+      const watcher = watch(
+        absolutePagesDir,
+        { recursive: true },
+        async (eventType, filename) => {
+          if (
+            isBuilding ||
+            !filename ||
+            typeof filename !== 'string' ||
+            !filename.endsWith('.tsx')
+          ) {
+            return
+          }
+
+          isBuilding = true
+          console.log(`\n📁 File changed: ${filename}, rebuilding...`)
+          try {
+            await buildSite({ pagesDir, distDir })
+            console.log('✅ Rebuild complete!')
+          } catch (error) {
+            console.error('❌ Build failed:', error)
+          } finally {
+            isBuilding = false
+          }
+        }
+      )
+
+      // Keep the process running
+      process.on('SIGINT', () => {
+        console.log('\n👋 Stopping watch mode...')
+        watcher.close()
+        process.exit(0)
+      })
+
+      // Keep alive
+      await new Promise(() => {})
+    } else {
+      await buildSite({ pagesDir, distDir })
+    }
     return
   }
 

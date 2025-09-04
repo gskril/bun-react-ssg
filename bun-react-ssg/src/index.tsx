@@ -1,8 +1,8 @@
 import { write } from 'bun'
 import { mkdir, readdir, stat } from 'node:fs/promises'
-import { basename, join, resolve } from 'path'
+import { basename, join, resolve } from 'node:path'
+import { pathToFileURL } from 'node:url'
 import { renderToString } from 'react-dom/server'
-import { pathToFileURL } from 'url'
 
 import { createHtml } from './html'
 import type { GenerateStaticParamsResult } from './types'
@@ -164,7 +164,6 @@ async function generateRoute(
   const document = createHtml({ html, metadata })
 
   await write(filePath, document)
-  console.log(`Generated ${filePath}`)
 }
 
 export type { Metadata } from './html'

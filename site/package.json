@@ -5,7 +5,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "bun-react-ssg build",
+    "dev": "bun-react-ssg build --watch",
     "build": "bun-react-ssg build",
     "serve": "bun-react-ssg serve"
   },
