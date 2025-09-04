@@ -59,14 +59,14 @@ export default TodoPage
 ## Build Commands
 
 ```bash
-# Development with watch mode
+# Rebuild files on change
 bun run dev
+
+# Serve the built files (you'll want to run this in a separate terminal during development)
+bun run serve
 
 # Production build
 bun run build
-
-# Single build
-bun run start
 ```
 
 ## Generated Structure

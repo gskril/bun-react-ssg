@@ -5,8 +5,8 @@
   "scripts": {
     "clean": "rm -rf ./node_modules",
     "dev": "bun --watch run ./src/index.tsx",
-    "start": "bun run ./src/index.tsx",
-    "build": "bun run src/index.tsx"
+    "build": "bun run ./src/index.tsx",
+    "serve": "bun run ./src/scripts/serve.ts"
   },
   "devDependencies": {
     "@types/html-minifier-terser": "^7.0.2",
