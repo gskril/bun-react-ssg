@@ -12,7 +12,7 @@
     "build": "bun --filter site run build",
     "dev": "bun --filter site run dev",
     "serve": "bun --filter site run serve",
-    "prettier": "bun run --filter '*' prettier"
+    "prettier": "prettier --write ."
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",

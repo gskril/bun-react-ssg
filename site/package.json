@@ -7,8 +7,7 @@
   "scripts": {
     "dev": "bun --watch run ./src/build.ts",
     "build": "bun run ./src/build.ts",
-    "serve": "bun run ./src/serve.ts",
-    "prettier": "prettier --write ."
+    "serve": "bun run ./src/serve.ts"
   },
   "dependencies": {
     "bun-react-ssg": "workspace:*",
