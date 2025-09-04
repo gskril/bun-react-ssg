@@ -1,18 +1,18 @@
 export type Metadata = {
-	title: string
-	description: string
-	opengraph?: {
-		image: string
-	}
+  title: string
+  description: string
+  opengraph?: {
+    image: string
+  }
 }
 
 type HtmlPageProps = {
-	html: string
-	metadata: Metadata
+  html: string
+  metadata: Metadata
 }
 
 export function createHtml({ html, metadata }: HtmlPageProps) {
-	return `
+  return `
 		<!doctype html>
 		<html lang="en">
 			<head>
@@ -28,7 +28,7 @@ export function createHtml({ html, metadata }: HtmlPageProps) {
 }
 
 function generateMetaTags({ title, description, opengraph }: Metadata) {
-	let tags = `
+  let tags = `
 		<title>${title}</title>
 		<meta name="description" content="${description}" />
 		<meta property="og:title" content="${title}" />
@@ -38,12 +38,12 @@ function generateMetaTags({ title, description, opengraph }: Metadata) {
 		<meta name="twitter:description" content="${description}" />
 	`
 
-	if (opengraph) {
-		tags += `
+  if (opengraph) {
+    tags += `
 			<meta property="og:image" content="${opengraph.image}" />
 			<meta name="twitter:image" content="${opengraph.image}" />
 		`
-	}
+  }
 
-	return tags
+  return tags
 }

@@ -11,9 +11,11 @@
     "clean": "rm -rf node_modules site/node_modules bun-react-ssg/node_modules dist",
     "build": "bun --filter site run build",
     "dev": "bun --filter site run dev",
-    "serve": "bun --filter site run serve"
+    "serve": "bun --filter site run serve",
+    "prettier": "bun run --filter '*' prettier"
   },
   "devDependencies": {
-    "prettier": "^2.8.4"
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+    "prettier": "^3.6.2"
   }
 }
