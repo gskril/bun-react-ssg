@@ -1,19 +1,14 @@
 import { Metadata } from '@/lib/html'
 
+import { fetchTodos } from '../utils'
+
 export const metadata: Metadata = {
   title: 'Home',
   description: 'This is a home page',
 }
 
 async function HomePage() {
-  const todosRes = await fetch('https://jsonplaceholder.typicode.com/todos')
-
-  const todos = (await todosRes.json()) as Array<{
-    userId: number
-    id: number
-    title: string
-    completed: boolean
-  }>
+  const todos = await fetchTodos()
 
   return (
     <div>
@@ -22,7 +17,10 @@ async function HomePage() {
       <h2>Todos</h2>
       <ul>
         {todos.map((todo) => (
-          <li key={todo.id}>{todo.title}</li>
+          <li key={todo.id}>
+            <a href={`/todo/${todo.id}/`}>{todo.title}</a>
+            {todo.completed && <span> ✓</span>}
+          </li>
         ))}
       </ul>
     </div>
