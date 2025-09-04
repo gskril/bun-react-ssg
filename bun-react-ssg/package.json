@@ -11,18 +11,15 @@
   },
   "main": "./src/index.tsx",
   "bin": {
-    "bun-react-ssg": "./bin/cli.js"
+    "bun-react-ssg": "./bin/cli.ts"
   },
   "scripts": {
     "build": "echo lib-only"
   },
   "dependencies": {
-    "html-minifier-terser": "^7.2.0",
-    "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@types/html-minifier-terser": "^7.0.2",
     "@types/react-dom": "^19.0.3",
     "bun-types": "^1.0.1"
   }
