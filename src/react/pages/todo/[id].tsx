@@ -1,19 +1,20 @@
-import { Metadata } from '@/lib/html'
+import { GenerateStaticParamsResult } from '@/lib/types'
 import { fetchTodos } from '@/react/utils'
 
-export const metadata: Metadata = {
-  title: 'Todo Item',
-  description: 'Individual todo item page',
-}
-
 // This function defines which dynamic routes to generate at build time
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<
+  GenerateStaticParamsResult[]
+> {
   const todos = await fetchTodos()
 
   return todos.map((todo) => ({
     params: { id: todo.id.toString() },
     // Optional: provide additional data to avoid re-fetching
     props: { todo },
+    metadata: {
+      title: `Todo ${todo.id}`,
+      description: todo.title,
+    },
   }))
 }
 

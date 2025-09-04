@@ -5,6 +5,7 @@ import { join } from 'path'
 import { renderToString } from 'react-dom/server'
 
 import { createHtml } from './lib/html'
+import { GenerateStaticParamsResult } from './lib/types'
 
 interface RouteInfo {
   path: string
@@ -12,11 +13,7 @@ interface RouteInfo {
   isDynamic: boolean
   params?: Record<string, string>
   props?: any
-}
-
-interface GenerateStaticParamsResult {
-  params: Record<string, string>
-  props?: any
+  metadata?: import('./lib/html').Metadata
 }
 
 async function generateStaticFiles() {
@@ -122,6 +119,7 @@ async function handleDynamicRoute(
         isDynamic: true,
         params: paramResult.params,
         props: paramResult.props,
+        metadata: paramResult.metadata,
       }
     })
   } catch (error) {
@@ -139,9 +137,12 @@ async function generateRoute(route: RouteInfo) {
   }
 
   // Get the default export from the file
-  const { default: Page, metadata } = await import(
+  const { default: Page, metadata: staticMetadata } = await import(
     `./react/pages/${route.path}`
   )
+
+  // Use metadata from generateStaticParams if available, otherwise use static metadata
+  const metadata = route.metadata || staticMetadata
 
   if (!metadata) {
     throw new Error(`Missing metadata in /src/react/pages/${route.path}.tsx`)
