@@ -1,4 +1,4 @@
-import { Metadata } from '@/lib/html'
+import { Metadata } from 'bun-react-ssg'
 
 import { fetchTodos } from '../utils'
 

@@ -1,68 +1,71 @@
 import { write } from 'bun'
-import { minify } from 'html-minifier-terser'
 import { mkdir, readdir, stat } from 'node:fs/promises'
-import { join } from 'path'
+import { basename, join, resolve } from 'node:path'
+import { pathToFileURL } from 'node:url'
 import { renderToString } from 'react-dom/server'
 
-import { createHtml } from './lib/html'
-import { GenerateStaticParamsResult } from './lib/types'
+import { createHtml } from './html'
+import type { GenerateStaticParamsResult } from './types'
 
-interface RouteInfo {
+export type BuildSiteOptions = {
+  pagesDir: string // e.g., 'src/pages'
+  distDir?: string // e.g., 'dist'
+}
+
+type RouteInfo = {
   path: string
   outputFile: string
   isDynamic: boolean
   params?: Record<string, string>
   props?: any
-  metadata?: import('./lib/html').Metadata
+  metadata?: import('./html').Metadata
 }
 
-async function generateStaticFiles() {
+export async function buildSite({
+  pagesDir,
+  distDir = 'dist',
+}: BuildSiteOptions) {
   const startTime = Date.now()
 
-  // Create dist directory if it doesn't exist
-  await mkdir('dist', { recursive: true })
+  const absolutePagesDir = resolve(pagesDir)
+  const absoluteDistDir = resolve(distDir)
 
-  // Get all routes (including dynamic ones)
-  const routes = await getAllRoutes('src/react/pages')
+  await mkdir(absoluteDistDir, { recursive: true })
 
-  // Generate HTML for each route
+  const routes = await getAllRoutes(absolutePagesDir, '')
+
   for (const route of routes) {
-    await generateRoute(route)
+    await generateRoute(route, absolutePagesDir, absoluteDistDir)
   }
 
-  const endTime = Date.now()
-  const duration = endTime - startTime
+  const duration = Date.now() - startTime
   console.log(`Generated ${routes.length} static files in ${duration}ms`)
 }
 
 async function getAllRoutes(
-  pagesDir: string,
+  pagesDirAbs: string,
   basePath = ''
 ): Promise<RouteInfo[]> {
   const routes: RouteInfo[] = []
-  const items = await readdir(pagesDir)
+  const items = await readdir(pagesDirAbs)
 
   for (const item of items) {
-    const fullPath = join(pagesDir, item)
+    const fullPath = join(pagesDirAbs, item)
     const itemStat = await stat(fullPath)
 
     if (itemStat.isDirectory()) {
-      // Recursively handle nested directories
       const nestedRoutes = await getAllRoutes(fullPath, join(basePath, item))
       routes.push(...nestedRoutes)
     } else if (item.endsWith('.tsx')) {
       const fileName = item.replace('.tsx', '')
       const routePath = join(basePath, fileName)
 
-      // Check if this is a dynamic route
       const isDynamic = fileName.startsWith('[') && fileName.endsWith(']')
 
       if (isDynamic) {
-        // Handle dynamic routes
         const dynamicRoutes = await handleDynamicRoute(routePath, fullPath)
         routes.push(...dynamicRoutes)
       } else {
-        // Handle static routes
         const isIndex = fileName === 'index'
         const outputPath = basePath
           ? isIndex
@@ -86,12 +89,10 @@ async function getAllRoutes(
 
 async function handleDynamicRoute(
   routePath: string,
-  filePath: string
+  fileAbsPath: string
 ): Promise<RouteInfo[]> {
   try {
-    // Import the dynamic route module
-    const module = await import(`../${filePath}`)
-
+    const module = await import(pathToFileURL(fileAbsPath).href)
     if (!module.generateStaticParams) {
       console.warn(
         `Dynamic route ${routePath} missing generateStaticParams function`
@@ -99,17 +100,13 @@ async function handleDynamicRoute(
       return []
     }
 
-    // Get the static params
     const staticParams: GenerateStaticParamsResult[] =
       await module.generateStaticParams()
 
     return staticParams.map((paramResult) => {
-      // Extract the dynamic segment name (e.g., '[id]' -> 'id')
-      const paramName =
-        routePath.split('/').pop()?.replace('[', '').replace(']', '') || ''
+      const fileName = basename(routePath)
+      const paramName = fileName.replace('[', '').replace(']', '') || ''
       const paramValue = paramResult.params[paramName]
-
-      // Create output path by replacing [param] with actual value
       const outputPath =
         routePath.replace(`[${paramName}]`, paramValue) + '/index.html'
 
@@ -128,27 +125,26 @@ async function handleDynamicRoute(
   }
 }
 
-async function generateRoute(route: RouteInfo) {
-  // Create nested directories if needed
-  const filePath = join('dist', route.outputFile)
+async function generateRoute(
+  route: RouteInfo,
+  pagesDirAbs: string,
+  distDirAbs: string
+) {
+  const filePath = join(distDirAbs, route.outputFile)
   const dirPath = filePath.split('/').slice(0, -1).join('/')
   if (dirPath) {
     await mkdir(dirPath, { recursive: true })
   }
 
-  // Get the default export from the file
-  const { default: Page, metadata: staticMetadata } = await import(
-    `./react/pages/${route.path}`
-  )
+  const routeFileAbsNoExt = join(pagesDirAbs, route.path)
+  const module = await import(pathToFileURL(`${routeFileAbsNoExt}.tsx`).href)
+  const { default: Page, metadata: staticMetadata } = module
 
-  // Use metadata from generateStaticParams if available, otherwise use static metadata
   const metadata = route.metadata || staticMetadata
-
   if (!metadata) {
-    throw new Error(`Missing metadata in /src/react/pages/${route.path}.tsx`)
+    throw new Error(`Missing metadata in ${routeFileAbsNoExt}.tsx`)
   }
 
-  // Prepare props for the page component
   let pageProps: any = {}
   if (route.isDynamic) {
     pageProps.params = route.params
@@ -157,27 +153,18 @@ async function generateRoute(route: RouteInfo) {
     }
   }
 
-  // Render React component to string (support async components)
   const pageElement =
-    Page.constructor.name === 'AsyncFunction' ? (
+    Page && Page.constructor && Page.constructor.name === 'AsyncFunction' ? (
       await Page(pageProps)
     ) : (
       <Page {...pageProps} />
     )
+
   const html = renderToString(pageElement)
+  const document = createHtml({ html, metadata })
 
-  // Wrap with HTML document
-  const document = await minify(createHtml({ html, metadata }), {
-    collapseWhitespace: true,
-    minifyCSS: true,
-    minifyJS: true,
-    removeComments: true,
-  })
-
-  // Write to file
   await write(filePath, document)
-  console.log(`Generated ${filePath}`)
 }
 
-// Run the static site generator
-generateStaticFiles().catch(console.error)
+export type { Metadata } from './html'
+export type { GenerateStaticParamsResult } from './types'

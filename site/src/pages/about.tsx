@@ -1,4 +1,4 @@
-import { Metadata } from '@/lib/html'
+import { Metadata } from 'bun-react-ssg'
 
 export const metadata: Metadata = {
   title: 'About Us',

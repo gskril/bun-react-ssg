@@ -1,23 +1,21 @@
 {
-  "name": "name",
+  "name": "workspace",
+  "private": true,
   "version": "1.0.0",
   "license": "MIT",
+  "workspaces": [
+    "site",
+    "bun-react-ssg"
+  ],
   "scripts": {
-    "clean": "rm -rf ./node_modules",
-    "dev": "bun --watch run ./src/index.tsx",
-    "build": "bun run ./src/index.tsx",
-    "serve": "bun run ./src/scripts/serve.ts"
+    "clean": "rm -rf node_modules site/node_modules bun-react-ssg/node_modules dist",
+    "build": "bun run --filter site build",
+    "dev": "bun run --filter site dev",
+    "serve": "bun run --filter site serve",
+    "prettier": "prettier --write ."
   },
   "devDependencies": {
-    "@types/html-minifier-terser": "^7.0.2",
-    "@types/react-dom": "^19.0.3",
-    "bun-types": "^1.0.1",
-    "html-minifier-terser": "^7.2.0",
-    "prettier": "^2.8.4"
-  },
-  "dependencies": {
-    "@trivago/prettier-plugin-sort-imports": "^4.1.1",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+    "prettier": "^3.6.2"
   }
 }

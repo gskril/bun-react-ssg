@@ -1,7 +1,7 @@
-import { GenerateStaticParamsResult } from '@/lib/types'
-import { fetchTodos } from '@/react/utils'
+import { GenerateStaticParamsResult } from 'bun-react-ssg'
 
-// This function defines which dynamic routes to generate at build time
+import { fetchTodos } from '@/utils'
+
 export async function generateStaticParams(): Promise<
   GenerateStaticParamsResult[]
 > {
@@ -9,7 +9,6 @@ export async function generateStaticParams(): Promise<
 
   return todos.map((todo) => ({
     params: { id: todo.id.toString() },
-    // Optional: provide additional data to avoid re-fetching
     props: { todo },
     metadata: {
       title: `Todo ${todo.id}`,
