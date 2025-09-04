@@ -1,5 +1,4 @@
 import { write } from 'bun'
-import { minify } from 'html-minifier-terser'
 import { mkdir, readdir, stat } from 'node:fs/promises'
 import { basename, join, resolve } from 'path'
 import { renderToString } from 'react-dom/server'
@@ -73,8 +72,8 @@ async function getAllRoutes(
             ? `${basePath}/index.html`
             : `${basePath}/${fileName}/index.html`
           : isIndex
-            ? 'index.html'
-            : `${fileName}/index.html`
+          ? 'index.html'
+          : `${fileName}/index.html`
 
         routes.push({
           path: routePath,
@@ -160,14 +159,9 @@ async function generateRoute(
     ) : (
       <Page {...pageProps} />
     )
-  const html = renderToString(pageElement)
 
-  const document = await minify(createHtml({ html, metadata }), {
-    collapseWhitespace: true,
-    minifyCSS: true,
-    minifyJS: true,
-    removeComments: true,
-  })
+  const html = renderToString(pageElement)
+  const document = createHtml({ html, metadata })
 
   await write(filePath, document)
   console.log(`Generated ${filePath}`)
