@@ -1,6 +1,7 @@
 .env
 .DS_Store
-/dist
-/out
-/ignore
-/node_modules
+dist/
+out/
+ignore/
+node_modules/
+
