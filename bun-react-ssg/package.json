@@ -10,7 +10,12 @@
     }
   },
   "main": "./src/index.tsx",
-  "scripts": {},
+  "bin": {
+    "bun-react-ssg": "./bin/cli.ts"
+  },
+  "scripts": {
+    "build": "echo lib-only"
+  },
   "dependencies": {
     "html-minifier-terser": "^7.2.0",
     "react": "^19.0.0",

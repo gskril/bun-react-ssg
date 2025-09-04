@@ -5,9 +5,9 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "bun --watch run ./src/build.ts",
-    "build": "bun run ./src/build.ts",
-    "serve": "bun run ./src/serve.ts"
+    "dev": "bun ../bun-react-ssg/bin/cli.ts build --pages src/pages --dist dist",
+    "build": "bun ../bun-react-ssg/bin/cli.ts build --pages src/pages --dist dist",
+    "serve": "bun ../bun-react-ssg/bin/cli.ts serve --dist dist --port 3000"
   },
   "dependencies": {
     "bun-react-ssg": "workspace:*",
