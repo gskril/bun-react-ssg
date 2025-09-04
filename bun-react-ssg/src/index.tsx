@@ -1,5 +1,5 @@
 import { write } from 'bun'
-import { mkdir, readdir, stat } from 'node:fs/promises'
+import { copyFile, mkdir, readdir, stat } from 'node:fs/promises'
 import { basename, join, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { renderToString } from 'react-dom/server'
@@ -29,8 +29,12 @@ export async function buildSite({
 
   const absolutePagesDir = resolve(pagesDir)
   const absoluteDistDir = resolve(distDir)
+  const absolutePublicDir = resolve('public')
 
   await mkdir(absoluteDistDir, { recursive: true })
+
+  // Copy public files first
+  await copyPublicFiles(absolutePublicDir, absoluteDistDir)
 
   const routes = await getAllRoutes(absolutePagesDir, '')
 
@@ -40,6 +44,39 @@ export async function buildSite({
 
   const duration = Date.now() - startTime
   console.log(`Generated ${routes.length} static files in ${duration}ms`)
+}
+
+async function copyPublicFiles(publicDirAbs: string, distDirAbs: string) {
+  try {
+    const publicStat = await stat(publicDirAbs)
+    if (!publicStat.isDirectory()) {
+      return // No public directory, skip
+    }
+
+    await copyDirectory(publicDirAbs, distDirAbs)
+  } catch (error) {
+    // Public directory doesn't exist, skip silently
+    if ((error as any).code !== 'ENOENT') {
+      console.warn(`Warning: Could not copy public files:`, error)
+    }
+  }
+}
+
+async function copyDirectory(srcDir: string, destDir: string) {
+  const items = await readdir(srcDir)
+
+  for (const item of items) {
+    const srcPath = join(srcDir, item)
+    const destPath = join(destDir, item)
+    const itemStat = await stat(srcPath)
+
+    if (itemStat.isDirectory()) {
+      await mkdir(destPath, { recursive: true })
+      await copyDirectory(srcPath, destPath)
+    } else {
+      await copyFile(srcPath, destPath)
+    }
+  }
 }
 
 async function getAllRoutes(
