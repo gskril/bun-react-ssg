@@ -6,15 +6,19 @@
   "type": "module",
   "scripts": {
     "dev": "bun-react-ssg build --watch",
-    "build": "bun-react-ssg build",
+    "build": "bun-react-ssg build && bun run css:build",
+    "css:build": "tailwindcss -i ./src/style.css -o ./dist/style.css",
+    "css:watch": "tailwindcss -i ./src/style.css -o ./dist/style.css --watch",
     "serve": "bun-react-ssg serve"
   },
   "dependencies": {
+    "@tailwindcss/cli": "^4.1.13",
     "bun-react-ssg": "workspace:*",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^4.1.13"
   },
   "devDependencies": {
-    "bun-types": "^1.0.1"
+    "bun-types": "^1.2.21"
   }
 }

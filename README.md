@@ -56,7 +56,9 @@ async function TodoPage({ params, todo }) {
 export default TodoPage
 ```
 
-## Build Commands
+## Scripts
+
+Within the `site` directory, run three separate terminal processes for a dev environment (I know this is annoying, and should probably use Turborepo instead):
 
 ```bash
 # Rebuild files on change
@@ -65,7 +67,13 @@ bun run dev
 # Serve the built files (you'll want to run this in a separate terminal during development)
 bun run serve
 
-# Production build
+# Rebuild css on Tailwind change
+bun run css:watch
+```
+
+To build the site into a dist directory for production, run:
+
+```bash
 bun run build
 ```
 

@@ -9,9 +9,6 @@
   ],
   "scripts": {
     "clean": "rm -rf node_modules site/node_modules bun-react-ssg/node_modules dist",
-    "build": "bun run --filter site build",
-    "dev": "bun run --filter site dev",
-    "serve": "bun run --filter site serve",
     "prettier": "prettier --write ."
   },
   "devDependencies": {
