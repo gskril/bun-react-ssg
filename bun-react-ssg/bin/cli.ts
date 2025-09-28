@@ -26,7 +26,7 @@ const args = process.argv.slice(2)
 const command = args[0]
 
 function readFlag(name: string, fallback?: string) {
-  const idx = args.findIndex((a: string) => a === name)
+  const idx = args.findIndex((a) => a === name)
   if (idx !== -1 && args[idx + 1]) return args[idx + 1]
   return fallback
 }
@@ -62,7 +62,7 @@ async function main() {
       const watcher = watch(
         absolutePagesDir,
         { recursive: true },
-        async (eventType: any, filename: any) => {
+        async (eventType, filename) => {
           if (
             isBuilding ||
             !filename ||
@@ -106,7 +106,7 @@ async function main() {
     const distPath = resolve(distDir)
     serve({
       port,
-      async fetch(request: any) {
+      async fetch(request) {
         const url = new URL(request.url)
         const pathname = url.pathname
 
