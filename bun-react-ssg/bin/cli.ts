@@ -16,6 +16,7 @@ Options:
   --pages <dir>	Path to pages directory (default: src/pages)
   --dist <dir>	Path to output directory (default: dist)
   --port <port>	Port for serve (default: 3000)
+  --url <url>	Base site URL for sitemap (e.g., https://example.com)
   --watch	Watch for changes and rebuild (build command only)
   -h, --help	Show help
 `)
@@ -42,6 +43,7 @@ async function main() {
 
   const pagesDir = readFlag('--pages', 'src/pages')!
   const distDir = readFlag('--dist', 'dist')!
+  const url = readFlag('--url')
 
   if (command === 'build') {
     const watchMode = hasFlag('--watch')
@@ -50,7 +52,7 @@ async function main() {
       console.log('🔄 Watch mode enabled. Building and watching for changes...')
 
       // Initial build
-      await buildSite({ pagesDir, distDir })
+      await buildSite({ pagesDir, distDir, url })
 
       // Watch for changes
       const absolutePagesDir = resolve(pagesDir)
@@ -73,7 +75,7 @@ async function main() {
           isBuilding = true
           console.log(`\n📁 File changed: ${filename}, rebuilding...`)
           try {
-            await buildSite({ pagesDir, distDir })
+            await buildSite({ pagesDir, distDir, url })
             console.log('✅ Rebuild complete!')
           } catch (error) {
             console.error('❌ Build failed:', error)
@@ -93,7 +95,7 @@ async function main() {
       // Keep alive
       await new Promise(() => {})
     } else {
-      await buildSite({ pagesDir, distDir })
+      await buildSite({ pagesDir, distDir, url })
     }
     return
   }

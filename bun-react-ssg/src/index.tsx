@@ -10,6 +10,7 @@ import type { GenerateStaticParamsResult } from './types'
 export type BuildSiteOptions = {
   pagesDir: string // e.g., 'src/pages'
   distDir?: string // e.g., 'dist'
+  url?: string // Base site URL for sitemap generation (e.g., https://example.com)
 }
 
 type RouteInfo = {
@@ -24,6 +25,7 @@ type RouteInfo = {
 export async function buildSite({
   pagesDir,
   distDir = 'dist',
+  url,
 }: BuildSiteOptions) {
   const startTime = Date.now()
 
@@ -40,6 +42,20 @@ export async function buildSite({
 
   for (const route of routes) {
     await generateRoute(route, absolutePagesDir, absoluteDistDir)
+  }
+
+  // Generate sitemap.xml if a base URL is provided
+  if (url && typeof url === 'string' && url.trim().length > 0) {
+    try {
+      await generateSitemap(absoluteDistDir, routes, url)
+      console.log(`Generated sitemap.xml with ${routes.length} entries`)
+      await generateRobots(absoluteDistDir, url)
+      console.log('Generated robots.txt linking to sitemap.xml')
+    } catch (error) {
+      console.warn('Warning: Failed to generate sitemap.xml:', error)
+    }
+  } else {
+    console.warn('Skipping sitemap.xml generation: --url not provided')
   }
 
   const duration = Date.now() - startTime
@@ -201,6 +217,42 @@ async function generateRoute(
   const document = createHtml({ html, metadata })
 
   await write(filePath, document)
+}
+
+function normalizeBaseUrl(baseUrl: string) {
+  return baseUrl.replace(/\/+$/, '')
+}
+
+function outputFileToPath(outputFile: string) {
+  if (outputFile.endsWith('index.html')) {
+    const dir = outputFile.slice(0, -'index.html'.length)
+    return '/' + dir
+  }
+  // Fallback: ensure leading slash
+  return '/' + outputFile
+}
+
+async function generateSitemap(
+  distDirAbs: string,
+  routes: RouteInfo[],
+  baseUrl: string
+) {
+  const normalizedBase = normalizeBaseUrl(baseUrl)
+  const urls = routes.map((r) => {
+    const path = outputFileToPath(r.outputFile)
+    const loc = path === '/' ? `${normalizedBase}/` : `${normalizedBase}${path}`
+    return `  <url>\n    <loc>${loc}</loc>\n  </url>`
+  })
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>\n`
+
+  await write(join(distDirAbs, 'sitemap.xml'), xml)
+}
+
+async function generateRobots(distDirAbs: string, baseUrl: string) {
+  const normalizedBase = normalizeBaseUrl(baseUrl)
+  const content = `User-agent: *\nAllow: /\nSitemap: ${normalizedBase}/sitemap.xml\n`
+  await write(join(distDirAbs, 'robots.txt'), content)
 }
 
 export type { Metadata } from './html'

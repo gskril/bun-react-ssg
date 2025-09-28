@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "bun-react-ssg build --watch",
-    "build": "bun-react-ssg build && bun run css:build",
+    "build": "bun-react-ssg build --url https://bun-react-ssg.pages.dev && bun run css:build",
     "css:build": "tailwindcss -i ./src/style.css -o ./dist/style.css",
     "css:watch": "tailwindcss -i ./src/style.css -o ./dist/style.css --watch",
     "serve": "bun-react-ssg serve"

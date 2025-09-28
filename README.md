@@ -8,7 +8,7 @@ A _super_ lightweight static site generator that probably shouldn't be used in p
 - [x] Dynamic route generation with `[param]` syntax
 - [x] Meta tags and SEO support
 - [x] Tailwind CSS support
-- [ ] Auto generating sitemap.xml
+- [x] Auto generating sitemap.xml
 
 ## Dynamic Routes
 
@@ -76,6 +76,18 @@ To build the site into a dist directory for production, run:
 ```bash
 bun run build
 ```
+
+### Sitemap generation
+
+Provide a base site URL to generate `sitemap.xml` during build:
+
+```bash
+bun bun-react-ssg build --url https://example.com
+```
+
+If `--url` is omitted, sitemap generation is skipped and a warning is printed.
+
+When a sitemap is generated, a `robots.txt` file is also created in the same `dist` directory that includes a `Sitemap:` directive pointing to the generated sitemap.
 
 ## Generated Structure
 
