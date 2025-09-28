@@ -1,14 +1,14 @@
 # Static Site Generator with React and Bun
 
-A super lightweight static site generator that supports both static and dynamic routes, inspired by Next.js pages router.
+A _super_ lightweight static site generator that probably shouldn't be used in production. It's like a less flexible version of [Astro](https://astro.build/) that natively uses React and doesn't support client components.
 
 ## Features
 
 - [x] Static route generation
 - [x] Dynamic route generation with `[param]` syntax
-- [x] Async React components
-- [x] HTML minification
 - [x] Meta tags and SEO support
+- [x] Tailwind CSS support
+- [ ] Auto generating sitemap.xml
 
 ## Dynamic Routes
 
@@ -17,7 +17,7 @@ Create dynamic routes using the `[param].tsx` syntax in your pages directory. Dy
 ### Example: `src/react/pages/todo/[id].tsx`
 
 ```tsx
-import { Metadata } from '@/lib/html'
+import { Metadata } from 'bun-react-ssg'
 
 export const metadata: Metadata = {
   title: 'Todo Item',
@@ -81,7 +81,7 @@ bun run build
 
 ```
 dist/
-├── index.html              # Static route: pages/index.tsx
+├── index.html             # Static route: pages/index.tsx
 ├── about/
 │   └── index.html         # Static route: pages/about.tsx
 └── todo/
