@@ -87,6 +87,8 @@ bun bun-react-ssg build --url https://example.com
 
 If `--url` is omitted, sitemap generation is skipped and a warning is printed.
 
+When a sitemap is generated, a `robots.txt` file is also created in the same `dist` directory that includes a `Sitemap:` directive pointing to the generated sitemap.
+
 ## Generated Structure
 
 ```

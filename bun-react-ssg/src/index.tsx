@@ -49,6 +49,8 @@ export async function buildSite({
     try {
       await generateSitemap(absoluteDistDir, routes, url)
       console.log(`Generated sitemap.xml with ${routes.length} entries`)
+      await generateRobots(absoluteDistDir, url)
+      console.log('Generated robots.txt linking to sitemap.xml')
     } catch (error) {
       console.warn('Warning: Failed to generate sitemap.xml:', error)
     }
@@ -245,6 +247,12 @@ async function generateSitemap(
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>\n`
 
   await write(join(distDirAbs, 'sitemap.xml'), xml)
+}
+
+async function generateRobots(distDirAbs: string, baseUrl: string) {
+  const normalizedBase = normalizeBaseUrl(baseUrl)
+  const content = `User-agent: *\nAllow: /\nSitemap: ${normalizedBase}/sitemap.xml\n`
+  await write(join(distDirAbs, 'robots.txt'), content)
 }
 
 export type { Metadata } from './html'
