@@ -58,17 +58,21 @@ export default TodoPage
 
 ## Scripts
 
-Within the `site` directory, run three separate terminal processes for a dev environment (I know this is annoying, and should probably use Turborepo instead):
+Within the `site` directory, you can either run three separate terminal processes for a dev environment, or use the parallel script:
 
 ```bash
-# Rebuild files on change
+# Option 1: Run all dev processes in parallel (recommended)
 bun run dev
 
+# Option 2: Run each process in separate terminals
+# Rebuild files on change
+bun run dev:build
+
 # Serve the built files (you'll want to run this in a separate terminal during development)
-bun run serve
+bun run dev:serve
 
 # Rebuild css on Tailwind change
-bun run css:watch
+bun run dev:css
 ```
 
 To build the site into a dist directory for production, run:
