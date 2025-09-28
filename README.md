@@ -82,7 +82,7 @@ bun run build
 Provide a base site URL to generate `sitemap.xml` during build:
 
 ```bash
-bun bun-react-ssg build --url https://example.com
+bun-react-ssg build --url https://example.com
 ```
 
 If `--url` is omitted, sitemap generation is skipped and a warning is printed.
