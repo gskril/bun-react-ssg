@@ -1,19 +1,20 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "pipeline": {
+  "ui": "tui",
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", "build/**"]
+      "outputs": ["dist/**"]
     },
-    "dev": {
+    "dev:build": {
       "cache": false,
       "persistent": true
     },
-    "serve": {
+    "dev:serve": {
       "cache": false,
       "persistent": true
     },
-    "css:watch": {
+    "dev:css": {
       "cache": false,
       "persistent": true
     }

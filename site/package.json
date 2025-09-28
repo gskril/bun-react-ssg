@@ -4,13 +4,14 @@
   "private": true,
   "license": "MIT",
   "type": "module",
+  "packageManager": "bun@1.2.2",
   "scripts": {
-    "dev": "bun-react-ssg build --watch",
-    "build": "bun-react-ssg build --url https://bun-react-ssg.pages.dev && bun run css:build",
-    "css:build": "tailwindcss -i ./src/style.css -o ./dist/style.css",
-    "css:watch": "tailwindcss -i ./src/style.css -o ./dist/style.css --watch",
-    "serve": "bun-react-ssg serve",
-    "dev:parallel": "turbo run dev serve css:watch --filter=site"
+    "dev": "turbo run dev:build dev:serve dev:css",
+    "dev:build": "bun-react-ssg build --watch",
+    "dev:serve": "bun-react-ssg serve",
+    "dev:css": "tailwindcss -i ./src/style.css -o ./dist/style.css --watch",
+    "build": "bun-react-ssg build --url https://bun-react-ssg.pages.dev && bun run build:css",
+    "build:css": "tailwindcss -i ./src/style.css -o ./dist/style.css"
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.1.13",
@@ -20,6 +21,7 @@
     "tailwindcss": "^4.1.13"
   },
   "devDependencies": {
+    "turbo": "^2.5.8",
     "bun-types": "^1.2.21"
   }
 }

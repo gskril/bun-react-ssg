@@ -9,8 +9,7 @@
   ],
   "scripts": {
     "clean": "rm -rf node_modules site/node_modules bun-react-ssg/node_modules dist",
-    "prettier": "prettier --write .",
-    "dev:site": "turbo run dev serve css:watch --filter=site"
+    "prettier": "prettier --write ."
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
