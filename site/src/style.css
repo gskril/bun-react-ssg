@@ -1,2 +1,18 @@
 @import 'tailwindcss';
 @source "../**/*.{ts,tsx,js,jsx,html}";
+
+h1 {
+  @apply scroll-m-20 text-4xl mb-6 font-bold tracking-tight text-balance;
+}
+
+h2 {
+  @apply scroll-m-20 pb-1 text-2xl font-semibold tracking-tight first:mt-0;
+}
+
+button {
+  @apply bg-blue-500 text-white px-4 py-1 rounded-md [&:not(:first-child)]:mt-2;
+}
+
+ul {
+  @apply ml-6 list-disc;
+}

@@ -1,5 +1,7 @@
 import { Metadata } from 'bun-react-ssg'
 
+import { Layout } from '@/components/Layout'
+
 import { fetchTodos } from '../utils'
 
 export const metadata: Metadata = {
@@ -11,7 +13,7 @@ async function HomePage() {
   const todos = await fetchTodos()
 
   return (
-    <div>
+    <Layout>
       <h1>Welcome to the Home Page</h1>
 
       <h2>Todos</h2>
@@ -23,7 +25,7 @@ async function HomePage() {
           </li>
         ))}
       </ul>
-    </div>
+    </Layout>
   )
 }
 

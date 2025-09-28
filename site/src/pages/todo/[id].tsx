@@ -1,5 +1,6 @@
 import { GenerateStaticParamsResult } from 'bun-react-ssg'
 
+import { Layout } from '@/components/Layout'
 import { fetchTodos } from '@/utils'
 
 export async function generateStaticParams(): Promise<
@@ -19,30 +20,26 @@ export async function generateStaticParams(): Promise<
 
 interface TodoPageProps {
   params: { id: string }
-  todo?: Awaited<ReturnType<typeof fetchTodos>>[number]
+  todo: Awaited<ReturnType<typeof fetchTodos>>[number]
 }
 
 async function TodoPage({ todo }: TodoPageProps) {
-  if (!todo) {
-    return (
-      <div>
-        <h1>Todo Not Found</h1>
-        <p>The requested todo could not be found.</p>
-        <a href="/">← Back to Home</a>
-      </div>
-    )
-  }
-
   return (
-    <div>
+    <Layout>
       <h1>Todo #{todo.id}</h1>
-      <div>
-        <h2>{todo.title}</h2>
-        <p>Status: {todo.completed ? 'Completed' : 'Pending'}</p>
-        <p>User ID: {todo.userId}</p>
+      <p>{todo.title}</p>
+
+      <div className="mt-4 mb-1">
+        <p className="text-sm text-gray-500">
+          Status: {todo.completed ? 'Completed' : 'Pending'}
+        </p>
+        <p className="text-sm text-gray-500">User ID: {todo.userId}</p>
       </div>
-      <a href="/">← Back to Home</a>
-    </div>
+
+      <a className="text-sm" href="/">
+        ← Back to Home
+      </a>
+    </Layout>
   )
 }
 
