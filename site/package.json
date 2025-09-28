@@ -9,7 +9,8 @@
     "build": "bun-react-ssg build --url https://bun-react-ssg.pages.dev && bun run css:build",
     "css:build": "tailwindcss -i ./src/style.css -o ./dist/style.css",
     "css:watch": "tailwindcss -i ./src/style.css -o ./dist/style.css --watch",
-    "serve": "bun-react-ssg serve"
+    "serve": "bun-react-ssg serve",
+    "dev:parallel": "turbo run dev serve css:watch --filter=site"
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.1.13",
