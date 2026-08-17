@@ -14,14 +14,14 @@
     "build:css": "tailwindcss -i ./src/style.css -o ./dist/style.css"
   },
   "dependencies": {
-    "@tailwindcss/cli": "^4.1.13",
+    "@tailwindcss/cli": "^4.3.3",
     "bun-react-ssg": "workspace:*",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "tailwindcss": "^4.1.13"
+    "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
-    "turbo": "^2.5.8",
+    "turbo": "2.10.9",
     "bun-types": "^1.2.21"
   }
 }
