@@ -1,0 +1,8 @@
+# Force the binary bun.lockb format instead of Bun's newer default text
+# bun.lock. Cloudflare Pages' package-manager auto-detection only
+# recognizes package-lock.json / yarn.lock / pnpm-lock.yaml / bun.lockb -
+# it has no support for bun.lock, so a text lockfile makes Pages silently
+# fall back to npm (which then fails on our internal `workspace:*` deps).
+# See: https://community.cloudflare.com/t/779835
+[install]
+saveTextLockfile = false
