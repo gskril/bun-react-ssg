@@ -4,7 +4,7 @@
   "private": true,
   "license": "MIT",
   "type": "module",
-  "packageManager": "bun@1.2.2",
+  "packageManager": "bun@1.4.4",
   "scripts": {
     "dev": "turbo run dev:build dev:serve dev:css",
     "dev:build": "bun-react-ssg build --watch",
